@@ -65,6 +65,11 @@ function configure() {
     cd nuttx
     ./tools/configure.sh -l ${BOARD}:${CONFIG}
 
+    # Debug
+    kconfig-tweak --enable DEBUG_ASSERTIONS
+    kconfig-tweak --enable DEBUG_FEATURES
+    kconfig-tweak --enable DEBUG_SYMBOLS
+
     make olddefconfig
 
 #    # hello
@@ -73,8 +78,8 @@ function configure() {
 #    kconfig-tweak --set-val APP_HELLO_STACKSIZE 2048
 
 #    System Type  --->
-#      ESP32 Chip Selection (ESP32-WROOM-32)  --->
-    kconfig-tweak --enable ARCH_CHIP_ESP32WROOM32
+#      ESP32 Chip Selection (ESP32-WROVER)  --->
+    kconfig-tweak --enable ARCH_CHIP_ESP32WROVER
 
 #      ESP32 Peripheral Selection  --->
 #        [*] SPI 3
@@ -82,12 +87,27 @@ function configure() {
     kconfig-tweak --enable ESP32_SPI3
     kconfig-tweak --enable ESP32_SPIRAM
 
+#        [*] I2C 0
+#        [ ] I2C 1
+    kconfig-tweak --enable ESP32_I2C
+    kconfig-tweak --enable ESP32_I2C0
+
 #      Memory Configuration  --->
 #        *** Additional Heaps ***
 #            SPI RAM heap function (Separated userspace heap)  --->
 #        [ ] Use the rest of IRAM as a separete heap
     kconfig-tweak --disable ESP32_SPIRAM_COMMON_HEAP
     kconfig-tweak --enable ESP32_SPIRAM_USER_HEAP
+
+#      I2C Configuration  --->
+#        (22) I2C0 SCL Pin
+#        (23) I2C0 SDA Pin
+#        (26) I2C1 SCL Pin
+#        (25) I2C1 SDA Pin
+    kconfig-tweak --set-val ESP32_I2C0_SCLPIN 22
+    kconfig-tweak --set-val ESP32_I2C0_SDAPIN 23
+    kconfig-tweak --set-val ESP32_I2CTIMEOSEC 0 
+    kconfig-tweak --set-val ESP32_I2CTIMEOMS 500
 
 #      SPI Configuration  --->
 #        (14) SPI3 CS Pin
@@ -126,17 +146,26 @@ function configure() {
 #    kconfig-tweak --enable ETC_ROMFS
 #
 #    Device Drivers  --->
+#      [*] I2C Driver Support  --->
+    kconfig-tweak --enable I2C
+    kconfig-tweak --enable I2C_DRIVER
+
 #      -*- SPI Driver Support  --->
 #        [*] SPI exchange
 #        [*] SPI CMD/DATA
+#
+#
 #      [*] Video Device Support  --->
 #        [*] Framebuffer character driver
+#
+#
 #      [*] LCD Driver Support  --->
 #        [*] Graphic LCD Driver Support  --->
 #          [*] LCD framebuffer front end
 #          [*] LCD driver selection  --->
-#            [*] ILI9341 LCD Single Chip Driver
 #            [*] Generic SPI Interface Driver (for ILI9341 or others)
+#            (1) Number of SSD1306 displays 
+#                SSD1306 Interface (SSD1306 on I2C Interface)  --->
 #
 #    Networking Support  --->
 #
@@ -166,6 +195,17 @@ function configure() {
     kconfig-tweak --enable NETINIT_DHCPC
     kconfig-tweak --enable NETINIT_DNS
 #
+
+#      System Libraries and NSH Add-Ons  --->
+#        [*] I2C tool  --->
+
+    kconfig-tweak --enable SYSTEM_I2CTOOL
+    kconfig-tweak --set-val I2CTOOL_MINBUS 0
+    kconfig-tweak --set-val I2CTOOL_MAXBUS 3
+    kconfig-tweak --set-val I2CTOOL_MINADDR 0x03
+    kconfig-tweak --set-val I2CTOOL_MAXADDR 0x77   
+    kconfig-tweak --set-val I2CTOOL_MAXREGADDR 0xff
+    kconfig-tweak --set-val I2CTOOL_DEFFREQ 400000 
 
 #    kconfig-tweak --enable PSEUDOFS_SOFTLINKS
 #    kconfig-tweak --enable FS_RAMMAP
@@ -231,6 +271,7 @@ function build_bootloader() {
     if [ "${BOARD}" != "sim" ]; then
         cd ${NUTTX_DIR}
 #        make bootloader
+        wget https://github.com/espressif/esp-nuttx-bootloader/releases/download/latest/bootloader-esp32.bin -P ./
         cd ..
     fi
 }
