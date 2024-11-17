@@ -43,34 +43,34 @@ function configure() {
         git clone ${NUTTX_APPS_GIT_URL} -b ${NUTTX_APPS_GIT_TAG} ${NUTTX_APPS_DIR}
     fi
 
-    # apps/external setting
-    if [ ! -d ${NUTTX_APPS_EXTERNAL_DIR} ]; then
-        mkdir -p ${NUTTX_APPS_EXTERNAL_DIR}
-        cat << 'EOS' > ${NUTTX_APPS_EXTERNAL_DIR}/Makefile
-MENUDESC = "External"
-
-include $(APPDIR)/Directory.mk
-EOS
-        cat << 'EOS' > ${NUTTX_APPS_EXTERNAL_DIR}/Make.defs
-EXTERNAL_DIR=$(APPDIR)/external
-include $(wildcard $(APPDIR)/external/*/Make.defs)
-EOS
-    fi
-
-    # hello
-    if [ ! -d ${MY_APP_EXTERNAL_DIR} ]; then
-        ln -s $(pwd)/${MY_APP_NAME} ${MY_APP_EXTERNAL_DIR}
-    fi
+#    # apps/external setting
+#    if [ ! -d ${NUTTX_APPS_EXTERNAL_DIR} ]; then
+#        mkdir -p ${NUTTX_APPS_EXTERNAL_DIR}
+#        cat << 'EOS' > ${NUTTX_APPS_EXTERNAL_DIR}/Makefile
+#MENUDESC = "External"
+#
+#include $(APPDIR)/Directory.mk
+#EOS
+#        cat << 'EOS' > ${NUTTX_APPS_EXTERNAL_DIR}/Make.defs
+#EXTERNAL_DIR=$(APPDIR)/external
+#include $(wildcard $(APPDIR)/external/*/Make.defs)
+#EOS
+#    fi
+#
+#    # hello
+#    if [ ! -d ${MY_APP_EXTERNAL_DIR} ]; then
+#        ln -s $(pwd)/${MY_APP_NAME} ${MY_APP_EXTERNAL_DIR}
+#    fi
 
     cd nuttx
     ./tools/configure.sh -l ${BOARD}:${CONFIG}
 
     make olddefconfig
 
-    # hello
-    kconfig-tweak --enable APP_HELLO
-    kconfig-tweak --set-val APP_HELLO_PRIORITY 100
-    kconfig-tweak --set-val APP_HELLO_STACKSIZE 2048
+#    # hello
+#    kconfig-tweak --enable APP_HELLO
+#    kconfig-tweak --set-val APP_HELLO_PRIORITY 100
+#    kconfig-tweak --set-val APP_HELLO_STACKSIZE 2048
 
 #    System Type  --->
 #      ESP32 Chip Selection (ESP32-WROOM-32)  --->
@@ -96,11 +96,11 @@ EOS
 #        (19) SPI3 MISO Pin
 #        SPI3 master I/O mode (Read & Write)  --->
 #          (X) Read & Write
-    kconfig-tweak --set-val ESP32_SPI3_CSPIN 14
-    kconfig-tweak --set-val ESP32_SPI3_CLKPIN 18
-    kconfig-tweak --set-val ESP32_SPI3_MOSIPIN 23
-    kconfig-tweak --set-val ESP32_SPI3_MISOPIN 19
-    kconfig-tweak --enable ESP32_SPI3_MASTER_IO_RW
+#    kconfig-tweak --set-val ESP32_SPI3_CSPIN 14
+#    kconfig-tweak --set-val ESP32_SPI3_CLKPIN 18
+#    kconfig-tweak --set-val ESP32_SPI3_MOSIPIN 23
+#    kconfig-tweak --set-val ESP32_SPI3_MISOPIN 19
+#    kconfig-tweak --enable ESP32_SPI3_MASTER_IO_RW
 #      SPI Flash Configuration  --->
 #        (0x300000) Storage MTD base adddress in SPI Flash
 #        (0x100000) Storage MTD size in SPI Flash
@@ -123,7 +123,7 @@ EOS
 #    RTOS Features  --->
 #      Tasks and Scheduling  --->
 #        [*] Auto-mount etc banked-in ROMFS image  ----
-    kconfig-tweak --enable ETC_ROMFS
+#    kconfig-tweak --enable ETC_ROMFS
 #
 #    Device Drivers  --->
 #      -*- SPI Driver Support  --->
@@ -143,7 +143,7 @@ EOS
 #
 #    File Systems  --->
 #      [*] ROMFS file system
-    kconfig-tweak --enable FS_ROMFS
+#    kconfig-tweak --enable FS_ROMFS
 #
 #    Graphic Support  --->
 #      (None)
@@ -167,8 +167,8 @@ EOS
     kconfig-tweak --enable NETINIT_DNS
 #
 
-    kconfig-tweak --enable PSEUDOFS_SOFTLINKS
-    kconfig-tweak --enable FS_RAMMAP
+#    kconfig-tweak --enable PSEUDOFS_SOFTLINKS
+#    kconfig-tweak --enable FS_RAMMAP
 
 
 #######################################################################
@@ -236,11 +236,9 @@ function build_bootloader() {
 }
 
 function build_partition_table() {
-    if [ "${BOARD}" = "esp32-devkitc" ]; then
-        cd ${NUTTX_DIR}
-        python3 ../partition/gen_esp32part.py ../partition/esp32-partitions.csv partition-table-esp32.bin
-        cd ..
-    fi
+    cd ${NUTTX_DIR}
+    python3 ../partition/gen_esp32part.py ../partition/esp32-partitions.csv partition-table-esp32.bin
+    cd ..
 }
 
 function allclean() {
