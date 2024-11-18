@@ -145,6 +145,12 @@ function configure() {
 #        [*] Auto-mount etc banked-in ROMFS image  ----
 #    kconfig-tweak --enable ETC_ROMFS
 #
+
+#
+#    Message Queue Options
+#
+    kconfig-tweak --set-val MQ_MAXMSGSIZE 64
+
 #    Device Drivers  --->
 #      [*] I2C Driver Support  --->
     kconfig-tweak --enable I2C
@@ -166,6 +172,26 @@ function configure() {
 #            [*] Generic SPI Interface Driver (for ILI9341 or others)
 #            (1) Number of SSD1306 displays 
 #                SSD1306 Interface (SSD1306 on I2C Interface)  --->
+
+    kconfig-tweak --enable LCD
+    kconfig-tweak --enable LCD_PACKEDMSFIRST
+    kconfig-tweak --enable LCD_FRAMEBUFFER
+
+    # LCD driver selection
+    kconfig-tweak --set-val LCD_MAXCONTRAST 63
+    kconfig-tweak --set-val LCD_MAXPOWER 1
+    kconfig-tweak --enable LCD_SH1106_OLED_132
+    kconfig-tweak --enable LCD_SSD1306
+    kconfig-tweak --set-val SSD1306_NUMDEVS 1
+    kconfig-tweak --enable LCD_SSD1306_I2C
+    kconfig-tweak --set-val SSD1306_I2CADDR 60
+    kconfig-tweak --set-val SSD1306_I2CFREQ 400000
+    kconfig-tweak --enable LCD_LANDSCAPE
+
+#    Timer Driver Support
+    kconfig-tweak --enable FB_UPDATE
+#
+#
 #
 #    Networking Support  --->
 #
@@ -175,8 +201,67 @@ function configure() {
 #    kconfig-tweak --enable FS_ROMFS
 #
 #    Graphic Support  --->
-#      (None)
+#      [*] NX Graphics
+
+    kconfig-tweak --enable NX
+    kconfig-tweak --enable NX_LCDDRIVER
+    kconfig-tweak --set-val NX_NDISPLAYS 1
+    kconfig-tweak --set-val NX_NPLANES 1
+    kconfig-tweak --enable NX_NOCURSOR
+    kconfig-tweak --set-val NX_BGCOLOR 0x0
+
+# Supported Pixel Depths
+    kconfig-tweak --enable NX_DISABLE_1BPP
+    kconfig-tweak --enable NX_DISABLE_2BPP
+    kconfig-tweak --enable NX_DISABLE_4BPP
+    kconfig-tweak --enable NX_DISABLE_8BPP
+    kconfig-tweak --enable NX_DISABLE_16BPP
+    kconfig-tweak --enable NX_DISABLE_24BPP
+    kconfig-tweak --enable NX_DISABLE_32BPP
+    kconfig-tweak --enable NX_PACKEDMSFIRST
+
 #
+# Input Devices
+#
+    kconfig-tweak --enable NX_XYINPUT_NONE
+
+#
+# Framed Window Borders
+#
+    kconfig-tweak --set-val NXTK_BORDERWIDTH 4
+    kconfig-tweak --enable NXTK_DEFAULT_BORDERCOLORS
+
+#
+# NX server options
+#
+    kconfig-tweak --enable NX_BLOCKING
+    kconfig-tweak --set-val NX_MXSERVERMSGS 32
+    kconfig-tweak --set-val NX_MXCLIENTMSGS 16
+
+    kconfig-tweak --set-val NXSTART_SERVERPRIO 110
+    kconfig-tweak --set-val NXSTART_SERVERSTACK 4096
+    kconfig-tweak --set-val NXSTART_DEVNO 0
+    kconfig-tweak --enable NXFONTS
+
+#
+# Font Selections
+#
+    kconfig-tweak --set-val NXFONTS_CHARBITS 7
+    kconfig-tweak --enable NXFONT_SANS20X26
+
+#
+# Font Cache Pixel Depths
+#
+    kconfig-tweak --enable NXFONTS_DISABLE_1BPP
+    kconfig-tweak --enable NXFONTS_DISABLE_2BPP
+    kconfig-tweak --enable NXFONTS_DISABLE_4BPP
+    kconfig-tweak --enable NXFONTS_DISABLE_8BPP
+    kconfig-tweak --enable NXFONTS_DISABLE_16BPP
+    kconfig-tweak --enable NXFONTS_DISABLE_24BPP
+    kconfig-tweak --enable NXFONTS_DISABLE_32BPP
+    kconfig-tweak --enable NXFONTS_PACKEDMSFIRST
+    kconfig-tweak --enable NXGLIB
+
 #    Memory Management
 #      (0x3F800000) Start address of second user heap region
 #      (4194304) Start address of second user heap region
@@ -210,6 +295,24 @@ function configure() {
 #    kconfig-tweak --enable PSEUDOFS_SOFTLINKS
 #    kconfig-tweak --enable FS_RAMMAP
 
+    kconfig-tweak --enable EXAMPLES_NXHELLO
+    kconfig-tweak --set-str EXAMPLES_NXHELLO_PROGNAME "nxhello"
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_PRIORITY 100
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_STACKSIZE 4096
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_BPP 32
+
+# Example Color Configuration
+    kconfig-tweak --enable EXAMPLES_NXHELLO_DEFAULT_COLORS
+
+# Example Font Configuration
+    kconfig-tweak --enable EXAMPLES_NXHELLO_DEFAULT_FONT
+
+# NX Server Options
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_LISTENER_STACKSIZE 4096
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_CLIENTPRIO 100
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_SERVERPRIO 120
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_LISTENERPRIO 80
+
 
 #######################################################################
 
@@ -236,27 +339,27 @@ function clean() {
 function create_etc_romfs() {
     cd ${NUTTX_DIR}
 
-    if [ -e rc.sysinit.template ]; then
-        rm rc.sysinit.template
-    fi
-    if [ -e rcS.template ]; then
-        rm rcS.template
-    fi
-    
-    touch rc.sysinit.template
-    touch rcS.template
-    echo "#! /bin/nsh" > rcS.template
-    echo "hello &" >> rcS.template
-    ./tools/mkromfsimg.sh -nofat ./ rc.sysinit.template rcS.template
-    mv etc_romfs.c boards/xtensa/esp32/esp32-devkitc/src/
-
-    target_file="boards/xtensa/esp32/esp32-devkitc/src/Make.defs"
-    if ! grep -Fq "ifeq (\$(CONFIG_ETC_ROMFS),y)" "$target_file"; then
-        insert_text="ifeq (\$(CONFIG_ETC_ROMFS),y)\nCSRCS += etc_romfs.c\nendif\n"
-        line_num=$(($(wc -l < "$target_file") - 3))
-        sed -i "${line_num}i\\
-$insert_text" "$target_file"
-    fi
+#    if [ -e rc.sysinit.template ]; then
+#        rm rc.sysinit.template
+#    fi
+#    if [ -e rcS.template ]; then
+#        rm rcS.template
+#    fi
+#    
+#    touch rc.sysinit.template
+#    touch rcS.template
+#    echo "#! /bin/nsh" > rcS.template
+#    echo "hello &" >> rcS.template
+#    ./tools/mkromfsimg.sh -nofat ./ rc.sysinit.template rcS.template
+#    mv etc_romfs.c boards/xtensa/esp32/esp32-devkitc/src/
+#
+#    target_file="boards/xtensa/esp32/esp32-devkitc/src/Make.defs"
+#    if ! grep -Fq "ifeq (\$(CONFIG_ETC_ROMFS),y)" "$target_file"; then
+#        insert_text="ifeq (\$(CONFIG_ETC_ROMFS),y)\nCSRCS += etc_romfs.c\nendif\n"
+#        line_num=$(($(wc -l < "$target_file") - 3))
+#        sed -i "${line_num}i\\
+#$insert_text" "$target_file"
+#    fi
 
     cd ..
 }
