@@ -341,23 +341,79 @@ function configure() {
 #    kconfig-tweak --enable PSEUDOFS_SOFTLINKS
 #    kconfig-tweak --enable FS_RAMMAP
 
+    #------------------------------------------------------------#
     kconfig-tweak --enable EXAMPLES_NXHELLO
     kconfig-tweak --set-str EXAMPLES_NXHELLO_PROGNAME "nxhello"
     kconfig-tweak --set-val EXAMPLES_NXHELLO_PRIORITY 100
     kconfig-tweak --set-val EXAMPLES_NXHELLO_STACKSIZE 4096
     kconfig-tweak --set-val EXAMPLES_NXHELLO_BPP 1
 
-# Example Color Configuration
+    # Example Color Configuration
     kconfig-tweak --enable EXAMPLES_NXHELLO_DEFAULT_COLORS
 
-# Example Font Configuration
+    # Example Font Configuration
     kconfig-tweak --enable EXAMPLES_NXHELLO_DEFAULT_FONT
 
-# NX Server Options
+    # NX Server Options
     kconfig-tweak --set-val EXAMPLES_NXHELLO_LISTENER_STACKSIZE 4096
     kconfig-tweak --set-val EXAMPLES_NXHELLO_CLIENTPRIO 100
     kconfig-tweak --set-val EXAMPLES_NXHELLO_SERVERPRIO 120
     kconfig-tweak --set-val EXAMPLES_NXHELLO_LISTENERPRIO 80
+    #------------------------------------------------------------#
+#    kconfig-tweak --disable EXAMPLES_NXIMAGE
+#    kconfig-tweak --set-str EXAMPLES_NXIMAGE_PROGNAME "nximage"
+#    kconfig-tweak --set-val EXAMPLES_NXIMAGE_PRIORITY 100
+#    kconfig-tweak --set-val EXAMPLES_NXIMAGE_STACKSIZE 4096
+#    kconfig-tweak --set-val EXAMPLES_NXIMAGE_BPP 8
+#    kconfig-tweak --enable EXAMPLES_NXIMAGE_GREYSCALE
+#    kconfig-tweak --enable EXAMPLES_NXIMAGE_XSCALE1P0
+#    kconfig-tweak --enable EXAMPLES_NXIMAGE_YSCALE1P0
+#
+#    # NX Server Options
+#    kconfig-tweak --set-val EXAMPLES_NXIMAGE_LISTENER_STACKSIZE 4096
+#    kconfig-tweak --set-val EXAMPLES_NXIMAGE_CLIENTPRIO 100
+#    kconfig-tweak --set-val EXAMPLES_NXIMAGE_SERVERPRIO 120
+#    kconfig-tweak --set-val EXAMPLES_NXIMAGE_LISTENERPRIO 80
+    #------------------------------------------------------------#
+    kconfig-tweak --disable EXAMPLES_NXLINES
+    kconfig-tweak --set-str EXAMPLES_NXLINES_PROGNAME "nxlines"
+    kconfig-tweak --set-val EXAMPLES_NXLINES_PRIORITY 100
+    kconfig-tweak --set-val EXAMPLES_NXLINES_STACKSIZE 4096
+    kconfig-tweak --disable EXAMPLES_NXLINES_DEFAULT_COLORS
+    kconfig-tweak --set-val EXAMPLES_NXLINES_BGCOLOR 0x00
+    kconfig-tweak --set-val EXAMPLES_NXLINES_LINEWIDTH 16
+    kconfig-tweak --set-val EXAMPLES_NXLINES_LINECOLOR 0x01
+    kconfig-tweak --set-val EXAMPLES_NXLINES_BORDERWIDTH 16
+    kconfig-tweak --set-val EXAMPLES_NXLINES_BORDERCOLOR 0x01
+    kconfig-tweak --set-val EXAMPLES_NXLINES_CIRCLECOLOR 0x01
+    kconfig-tweak --set-val EXAMPLES_NXLINES_BPP 1
+
+    # NX Server Options
+    kconfig-tweak --set-val EXAMPLES_NXLINES_LISTENER_STACKSIZE 4096
+    kconfig-tweak --set-val EXAMPLES_NXLINES_CLIENTPRIO 100
+    kconfig-tweak --set-val EXAMPLES_NXLINES_SERVERPRIO 120
+    kconfig-tweak --set-val EXAMPLES_NXLINES_LISTENERPRIO 80
+    #------------------------------------------------------------#
+    kconfig-tweak --enable EXAMPLES_NXTEXT
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_BPP 1        
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_BMCACHE 128  
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_GLCACHE 16   
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_LINESPACING 2
+
+    kconfig-tweak --disable EXAMPLES_NXTEXT_DEFAULT_COLORS
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_BGCOLOR 0x0    
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_BGFONTCOLOR 0x1
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_PUCOLOR 0x1    
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_PUFONTCOLOR 0x1
+
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_BGFONTID 0
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_PUFONTID 1
+
+    # NX Server Options
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_STACKSIZE 4096 
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_LISTENERPRIO 80
+    kconfig-tweak --set-val EXAMPLES_NXTEXT_CLIENTPRIO 100 
+    #------------------------------------------------------------#
 
     make olddefconfig
 
