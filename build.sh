@@ -62,6 +62,8 @@ function configure() {
 #        ln -s $(pwd)/${MY_APP_NAME} ${MY_APP_EXTERNAL_DIR}
 #    fi
 
+    cp replacement_files/boards.xtensa.esp32.common.src.esp32_ssd1306.c ${NUTTX_DIR}/boards/xtensa/esp32/common/src/esp32_ssd1306.c
+
     cd nuttx
     ./tools/configure.sh -l ${BOARD}:${CONFIG}
 
@@ -88,6 +90,7 @@ function configure() {
 
     kconfig-tweak --enable DEBUG_GRAPHICS
     kconfig-tweak --enable DEBUG_GRAPHICS_ERROR
+    kconfig-tweak --enable DEBUG_GRAPHICS_WARN
     kconfig-tweak --enable DEBUG_GRAPHICS_INFO
 
     #
@@ -95,6 +98,7 @@ function configure() {
     #
     kconfig-tweak --enable DEBUG_I2C
     kconfig-tweak --enable DEBUG_I2C_ERROR
+    kconfig-tweak --enable DEBUG_I2C_WARN
     kconfig-tweak --enable DEBUG_I2C_INFO
 
     kconfig-tweak --enable DEBUG_SYMBOLS
