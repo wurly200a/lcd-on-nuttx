@@ -288,12 +288,17 @@ function configure() {
 # Font Selections
 #
     kconfig-tweak --set-val NXFONTS_CHARBITS 7
-    kconfig-tweak --enable NXFONT_SANS20X26
+    kconfig-tweak --disable NXFONT_MONO5X8
+    kconfig-tweak --disable NXFONT_SANS20X26
+    kconfig-tweak --enable NXFONT_SANS28X37
+    kconfig-tweak --disable NXFONT_SANS39X48
+    kconfig-tweak --disable NXFONT_PIXEL_LCD_MACHINE
+    kconfig-tweak --disable NXFONT_TOM_THUMB_4X6
 
 #
 # Font Cache Pixel Depths
 #
-    kconfig-tweak --enable NXFONTS_DISABLE_1BPP
+    kconfig-tweak --disable NXFONTS_DISABLE_1BPP
     kconfig-tweak --enable NXFONTS_DISABLE_2BPP
     kconfig-tweak --enable NXFONTS_DISABLE_4BPP
     kconfig-tweak --enable NXFONTS_DISABLE_8BPP
@@ -340,7 +345,7 @@ function configure() {
     kconfig-tweak --set-str EXAMPLES_NXHELLO_PROGNAME "nxhello"
     kconfig-tweak --set-val EXAMPLES_NXHELLO_PRIORITY 100
     kconfig-tweak --set-val EXAMPLES_NXHELLO_STACKSIZE 4096
-    kconfig-tweak --set-val EXAMPLES_NXHELLO_BPP 32
+    kconfig-tweak --set-val EXAMPLES_NXHELLO_BPP 1
 
 # Example Color Configuration
     kconfig-tweak --enable EXAMPLES_NXHELLO_DEFAULT_COLORS
