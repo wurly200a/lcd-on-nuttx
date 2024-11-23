@@ -65,12 +65,49 @@ function configure() {
     cd nuttx
     ./tools/configure.sh -l ${BOARD}:${CONFIG}
 
-    # Debug
-    kconfig-tweak --enable DEBUG_ASSERTIONS
+    #
+    # Debug Options
+    #
     kconfig-tweak --enable DEBUG_FEATURES
+
+    #
+    # Debug SYSLOG Output Controls
+    #
+    kconfig-tweak --enable DEBUG_ERROR
+    kconfig-tweak --enable DEBUG_WARN
+    kconfig-tweak --enable DEBUG_INFO
+    kconfig-tweak --enable DEBUG_ASSERTIONS
+
+    #
+    # Subsystem Debug Options
+    #
+#    kconfig-tweak --disable DEBUG_FS
+#    kconfig-tweak --disable DEBUG_FS_ERROR
+#    kconfig-tweak --disable DEBUG_FS_WARN
+#    kconfig-tweak --disable DEBUG_FS_INFO
+
+    kconfig-tweak --enable DEBUG_GRAPHICS
+    kconfig-tweak --enable DEBUG_GRAPHICS_ERROR
+    kconfig-tweak --enable DEBUG_GRAPHICS_INFO
+
+    #
+    # Driver Debug Options
+    #
+    kconfig-tweak --enable DEBUG_I2C
+    kconfig-tweak --enable DEBUG_I2C_ERROR
+    kconfig-tweak --enable DEBUG_I2C_INFO
+
     kconfig-tweak --enable DEBUG_SYMBOLS
 
-    make olddefconfig
+    #
+    # System Logging
+    #
+
+    #
+    # SYSLOG channels
+    #
+    kconfig-tweak --set-str SYSLOG_DEVPATH "/dev/console"
+    kconfig-tweak --enable SYSLOG_CONSOLE
 
 #    # hello
 #    kconfig-tweak --enable APP_HELLO
@@ -211,7 +248,7 @@ function configure() {
     kconfig-tweak --set-val NX_BGCOLOR 0x0
 
 # Supported Pixel Depths
-    kconfig-tweak --enable NX_DISABLE_1BPP
+    kconfig-tweak --disable NX_DISABLE_1BPP
     kconfig-tweak --enable NX_DISABLE_2BPP
     kconfig-tweak --enable NX_DISABLE_4BPP
     kconfig-tweak --enable NX_DISABLE_8BPP
@@ -239,7 +276,7 @@ function configure() {
     kconfig-tweak --set-val NX_MXCLIENTMSGS 16
 
     kconfig-tweak --set-val NXSTART_SERVERPRIO 110
-    kconfig-tweak --set-val NXSTART_SERVERSTACK 4096
+    kconfig-tweak --set-val NXSTART_SERVERSTACK 8192
     kconfig-tweak --set-val NXSTART_DEVNO 0
     kconfig-tweak --enable NXFONTS
 
@@ -313,6 +350,7 @@ function configure() {
     kconfig-tweak --set-val EXAMPLES_NXHELLO_SERVERPRIO 120
     kconfig-tweak --set-val EXAMPLES_NXHELLO_LISTENERPRIO 80
 
+    make olddefconfig
 
 #######################################################################
 
