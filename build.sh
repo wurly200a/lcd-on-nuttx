@@ -375,7 +375,7 @@ function configure() {
 #    kconfig-tweak --set-val EXAMPLES_NXIMAGE_SERVERPRIO 120
 #    kconfig-tweak --set-val EXAMPLES_NXIMAGE_LISTENERPRIO 80
     #------------------------------------------------------------#
-    kconfig-tweak --disable EXAMPLES_NXLINES
+    kconfig-tweak --enable EXAMPLES_NXLINES
     kconfig-tweak --set-str EXAMPLES_NXLINES_PROGNAME "nxlines"
     kconfig-tweak --set-val EXAMPLES_NXLINES_PRIORITY 100
     kconfig-tweak --set-val EXAMPLES_NXLINES_STACKSIZE 4096
