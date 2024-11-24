@@ -342,6 +342,16 @@ function configure() {
 #    kconfig-tweak --enable FS_RAMMAP
 
     #------------------------------------------------------------#
+    kconfig-tweak --enable EXAMPLES_NXDEMO
+
+    kconfig-tweak --set-val EXAMPLES_NXDEMO_VPLANE 0
+    kconfig-tweak --set-val EXAMPLES_NXDEMO_DEVNO 0
+    kconfig-tweak --set-val EXAMPLES_NXDEMO_BPP 1
+
+    kconfig-tweak --disable EXAMPLES_NXDEMO_DEFAULT_COLORS
+    kconfig-tweak --set-val EXAMPLES_NXDEMO_BGCOLOR 0x0
+    kconfig-tweak --disable EXAMPLES_NXDEMO_EXTERNINIT
+    #------------------------------------------------------------#
     kconfig-tweak --enable EXAMPLES_NXHELLO
     kconfig-tweak --set-str EXAMPLES_NXHELLO_PROGNAME "nxhello"
     kconfig-tweak --set-val EXAMPLES_NXHELLO_PRIORITY 100
@@ -500,6 +510,17 @@ function allclean() {
 #        rm -rf ${ESP_IDF_ILI9340_DIR}
 #    fi
 }
+
+if [ -n "$ESP_IDF_VERSION" ]; then
+    echo "ESP_IDF_VERSION=${ESP_IDF_VERSION}"
+else
+    echo "This script is expected to run using docker container which included ESP_IDF"
+    echo "Please run:"
+    echo "docker run --rm -it -v \${PWD}:/home/builder -w /home/builder ghcr.io/wurly200a/builder-esp32/esp-idf-v5.3:latest"
+    echo "then"
+    echo ". /opt/esp-idf/export.sh"
+    exit
+fi
 
 case "$1" in
     allclean)
